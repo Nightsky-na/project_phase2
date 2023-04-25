@@ -6,6 +6,9 @@ const uploadFile = require('../middleware/upload');
 // Create a product
 router.route('/create-product').post(uploadFile.single('file'), createProduct);
 
+
+
+
 // Get all products
 router.route('/get-all-products').post(getAllProducts);
 

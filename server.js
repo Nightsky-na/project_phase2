@@ -30,6 +30,9 @@ const app = express();
 // Use morgan to log every request to the console
 app.use(morgan('dev'));
 
+// ======== Initialize Middleware ========
+app.use(express.static('static'));
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

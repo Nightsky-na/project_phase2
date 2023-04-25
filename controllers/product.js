@@ -44,6 +44,95 @@ exports.createProduct = async (req, res) => {
     }
 };
 
+// @desc  Delete a product by id
+exports.deleteProduct = async (req, res) => {
+    try {
+        const { idproduct_info } = req.body;
+        const product = await Product.findOne({
+            where: {
+                idproduct_info: idproduct_info
+            }
+        });
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found',
+            });
+        }
+        await Product.destroy({
+            where: {
+                idproduct_info: idproduct_info
+            }
+        });
+        return res.status(200).json({
+            success: true,
+            message: 'Product deleted successfully',
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error',
+        });
+    }
+};
+
+
+// @desc  Update a product by id
+exports.updateProduct = async (req, res) => {
+    try {
+        const { idproduct_info } = req.body;
+        const product = await Product.findOne({
+            where: {
+                idproduct_info: idproduct_info
+            }
+        });
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found',
+            });
+        }
+
+        const image = req.file;
+        const { name, description, price, type } = req.body;
+        const image_name = req.file.filename;
+
+        await Product.update({
+            name,
+            price,
+            description,
+            type,
+            image: fs.readFileSync(
+                __basedir + '/static/assets/uploads/' + req.file.filename
+            ),
+            name_image: image_name,
+        }, {
+            where: {
+                idproduct_info: idproduct_info
+            }
+        }).then((product) => {
+            fs.writeFileSync(
+                __basedir + '/static/assets/tmp/' + product.name_image,
+                product.image
+            );
+        
+            return res.status(201).json({
+                success: true,
+                message: 'Image uploaded successfully',
+                data: image,
+            });
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error',
+        });
+    }
+};
+
+
 // @desc  Get all products
 exports.getAllProducts = async (req, res) => {
     try {
