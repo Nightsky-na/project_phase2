@@ -7,6 +7,9 @@ const cookieParser = require('cookie-parser');
 const db = require('./config/db');
 // ======== Require Packages ========
 
+global.__basedir = __dirname;
+
+
 db.sequelize.sync()
     .then(() => {
         console.log("======== Synced db. ========");
@@ -34,7 +37,7 @@ app.use(cookieParser());
 app.use('/user', require('./routes/user'));
 app.use('/login', require('./routes/login'));
 app.use('/auth', require('./routes/auth'));
-
+app.use('/product', require('./routes/product'));
 
 app.use(errorHandler);
 // ======== Initialize Middleware ========
