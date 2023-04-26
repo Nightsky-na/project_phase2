@@ -6,8 +6,9 @@ const Product = db.product;
 
 // @desc  Create a new product
 exports.createProduct = async (req, res) => {
+    console.log('createProduct');
     try{
-        
+        console.log(req.body);
         const image = req.file;
         const { name, description, price, type, idproduct_info } = req.body;
         
@@ -44,9 +45,50 @@ exports.createProduct = async (req, res) => {
     }
 };
 
+exports.test = async (req, res) => {
+    console.log(req.body);
+    console.log('test');
+};
+
+exports.createProductNoImage = async (req, res) => {
+    console.log('createProduct');
+    console.log(req.body);
+
+    try{
+        // const image = req.file;
+        const { name, description, price, type, idproduct_info } = req.body;
+                
+        const newProduct = await Product.create({
+            idproduct_info: idproduct_info,
+            name: name,
+            price: price,
+            description: description,
+            type: type,
+        
+        }).then((product) => {
+            // fs.writeFileSync(
+            //     __basedir + '/static/assets/tmp/' + product.name_image,
+            //     product.image
+            // );
+            return res.status(201).json({
+                success: true,
+                message: 'Image uploaded successfully',
+                data: product,
+            });
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error',
+        });
+    }
+};
+
 // @desc  Delete a product by id
 exports.deleteProduct = async (req, res) => {
     try {
+        console.log(req.body);
         const { idproduct_info } = req.body;
         const product = await Product.findOne({
             where: {
@@ -224,10 +266,39 @@ exports.getProductByTypeAndName = async (req, res) => {
     }
 }
 
+exports.getProductByTypeAndDescription = async (req, res) => {
+    try {
+        const { type, description } = req.body;
+        const products = await Product.findAll({
+            where: {
+                type: type,
+                description: {
+                    [Op.like]: '%' + description + '%'
+                }
+            }
+        });
+        res.status(200).json({
+            success: true,
+            data: products,
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            success: false,
+            message: 'Server error',
+        });
+    }
+}
+
+
 // @desc Get all products by id
 exports.getProductById = async (req, res) => {
     try {
         const { id } = req.body;
+        console.log(req.body);
+        
+        console.log(id);
         const products = await Product.findAll({
             where: {
                 idproduct_info: id
@@ -272,3 +343,42 @@ exports.getProductByDescription = async (req, res) => {
     }
 };
     
+exports.editProduct = async (req, res) => {
+    try {
+        console.log('Edit product');
+        console.log(req.body);
+        const { name, description, price, type, idproduct_info } = req.body;
+        console.log(req.body);
+        const product = await Product.findOne({
+            where: {
+                idproduct_info: idproduct_info
+            }
+        });
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found',
+            });
+        }
+        await Product.update({
+            name,
+            price,
+            description,
+            type,
+        }, {
+            where: {
+                idproduct_info: idproduct_info
+            }
+        });
+        return res.status(200).json({
+            success: true,
+            message: 'Product updated successfully',
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error',
+        });
+    }
+}

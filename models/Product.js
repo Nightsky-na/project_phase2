@@ -24,11 +24,11 @@ module.exports = (sequelize, Sequelize) => {
         },
         image: {
             type: DataTypes.BLOB,
-            allowNull: false
+            allowNull: true
         }, 
         name_image: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         }
 
     });

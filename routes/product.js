@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const {createProduct , getAllProducts, getProductByName, getProductByType, getProductByTypeAndName, getProductById, getProductByDescription} = require('../controllers/product');
+const {createProduct , getAllProducts, getProductByName, getProductByType, getProductByTypeAndName, getProductById, getProductByDescription, getProductByTypeAndDescription, createProductNoImage, deleteProduct, editProduct} = require('../controllers/product');
 const uploadFile = require('../middleware/upload');
 
 // Create a product
 router.route('/create-product').post(uploadFile.single('file'), createProduct);
 
-
-
+// Delete a product
+router.route('/delete-product').post(deleteProduct);
 
 // Get all products
 router.route('/get-all-products').post(getAllProducts);
@@ -21,12 +21,19 @@ router.route('/get-product-by-type').post(getProductByType);
 // Get all products by type and name
 router.route('/get-product-by-type-and-name').post(getProductByTypeAndName);
 
+// Get all products by type and description
+router.route('/get-product-by-type-and-description').post(getProductByTypeAndDescription);
+
 // Get all products by id
 router.route('/get-product-by-id').post(getProductById);
 
 // Get all products by description
 router.route('/get-product-by-description').post(getProductByDescription);
 
+// Create product no Image
+router.route('/create-product-no-image').post(createProductNoImage);
 
+// Edit product
+router.route('/edit-product').post(editProduct);
 
 module.exports = router;

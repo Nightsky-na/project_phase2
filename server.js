@@ -33,7 +33,14 @@ app.use(morgan('dev'));
 // ======== Initialize Middleware ========
 app.use(express.static('static'));
 
-app.use(cors());
+app.use(cors(
+    
+
+    {
+        origin: 'http://localhost:8080',
+        credentials: true
+    }
+));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -45,7 +52,8 @@ app.use('/product', require('./routes/product'));
 app.use(errorHandler);
 // ======== Initialize Middleware ========
 
-const PORT = process.env.PORT || 5000;
+// const PORT = process.env.PORT || 5000;
+const PORT = 3001;
 
 const server = app.listen(PORT, () => {
     console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);

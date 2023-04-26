@@ -4,6 +4,7 @@ const Login = db.login;
 const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const ErrorResponse = require('../utils/errorResponse');
 
 // @desc  Register a new user
 exports.register = async (req, res, next) => {
@@ -42,6 +43,7 @@ exports.register = async (req, res, next) => {
 // @desc    Login 
 exports.login = async (req, res, next) => {
     const { email, password } = req.body;
+    console.log(req.body);
     try {
         // Check if user exists
         const user = await User.findOne({
@@ -50,6 +52,7 @@ exports.login = async (req, res, next) => {
             },
             include: [Login]
         });
+        console.log(user);
         if (!user) {
             return next(new ErrorResponse('Invalid credentials', 401));
         }
